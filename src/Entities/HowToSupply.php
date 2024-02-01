@@ -2,7 +2,8 @@
 
 namespace RecipeImportPipeline\Entities;
 
-use RecipeImportPipeline\Utilities\TypeUtilities;
+use RecipeImportPipeline\Exceptions\JsonMappingException;
+use RecipeImportPipeline\Utilities\JsonMapper;
 
 /**
  * A supply (e.g., ingredient).
@@ -30,12 +31,14 @@ class HowToSupply extends BaseSchemaOrgEntity
         if(!isset($json['name'])) {
             return null;
         }
-        $names = TypeUtilities::as_cleaned_array($json['name']);
 
-        if(sizeof($names) == 0 || !is_string($names[0])) {
+        try {
+            $name = JsonMapper::ExtractString($json['name']);
+        }
+        catch (JsonMappingException){
             return null;
         }
 
-        return new HowToSupply($names[0]);
+        return new HowToSupply($name);
     }
 }
