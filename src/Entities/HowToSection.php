@@ -1,6 +1,6 @@
 <?php
 
-namespace Entities;
+namespace RecipeImportPipeline\Entities;
 
 /**
  * A section combining multiple steps or subsections.

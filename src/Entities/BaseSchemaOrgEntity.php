@@ -1,6 +1,6 @@
 <?php
 
-namespace Entities;
+namespace RecipeImportPipeline\Entities;
 
 abstract class BaseSchemaOrgEntity
 {

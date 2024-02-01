@@ -1,6 +1,6 @@
 <?php
 
-namespace Entities;
+namespace RecipeImportPipeline\Entities;
 
 /**
  * A step in a series of steps.

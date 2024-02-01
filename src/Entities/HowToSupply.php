@@ -1,8 +1,8 @@
 <?php
 
-namespace Entities;
+namespace RecipeImportPipeline\Entities;
 
-use Utilities\TypeUtilities;
+use RecipeImportPipeline\Utilities\TypeUtilities;
 
 /**
  * A supply (e.g., ingredient).
@@ -12,7 +12,7 @@ class HowToSupply extends BaseSchemaOrgEntity
     /**
      * @var string Name of the supply.
      */
-    private string $Name;
+    public string $Name;
 
     /**
      * Creates a new `HowToSupply` instance
