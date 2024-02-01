@@ -1,10 +1,10 @@
-# Recipe Import Pipeline
+# 🚰 Recipe Import Pipeline
 
-This repository contains a prototype for an import and mapping pipeline for the [Nextcloud Cookbook](https://github.com/nextcloud/cookbook/) app.
+This repository contains a prototype for an import and mapping pipeline for the [🧑‍🍳 Nextcloud Cookbook](https://github.com/nextcloud/cookbook/) app.
 
 The pipeline is planned for importing recipes from multiple input sources (recipe parsers), storing the raw data, extracting recipe data, and mapping it to `Recipe` objects.
 
-## Status
+## 📋 Status
 
 Currently implemented
 
@@ -16,7 +16,7 @@ Currently implemented
 - [ ] Mapping JSON to `Recipe`, etc. classes
 
 
-## Flow
+## 🔀 Flow
 
 ### Extracting recipe data
 
