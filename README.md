@@ -18,21 +18,94 @@ Currently implemented
 
 ## 🔀 Flow
 
-### Extracting recipe data
-
-The input of a `RecipeParser` can be manifold: a URL pointing to a website, a JSON string, HTML code, an image of a cookbook page, a PDF, etc. The dedicated parser tries to extract the recipe data from the input and creates a valid JSON string. For a website this could mean, e.g., looking for an `ld+json` element and extracting this. 
+The overall process of parsing a recipe is carried out in multiple steps.
+The different steps should be described in the following in detail.
 
 ```mermaid
 flowchart LR
+    input -- RawParser --> raw[/JSON/]
+    raw -- JsonParser --> jo(JSON object repr)
+    jo -- RecipeParser --> ro(Recipe object repr)
+```
+
+During the export the complete parsing chain needs to be carried out.
+Nevertheless, in order to make the app extensible with respect to future enhancements, a rather raw version will be stored on disk for persistence.
+
+### Extracting basic JSON data - RawParser
+
+The input of a reciper can be manifold: a URL pointing to a website, a JSON string, HTML code, an image of a cookbook page, a PDF, etc.
+The dedicated parser tries to extract the recipe data from the input and creates a valid JSON string.
+For a website this could mean, e.g., looking for an `ld+json` element and extracting this.
+
+The goal of the first stage (the `RawParser`) is to create a common data format of raw data.
+For simplicity, JSON is used here.
+This format must be parsable by the `json_decode` method in PHP.
+
+```mermaid
+flowchart TD
     subgraph "`**RecipeParser**`"
         * -->|Input|B[RecipeExtractor]
-        B -->|JSON|C{valid JSON?}
-        C -->|Yes| D{Contains recipe data?}
-        D -->|Yes| F[Store raw data on disk]
+        B -- raw string --> cleaner[JSON cleaner & parser]
+        cleaner -->|JSON|C{"`JSON
+        parsable?`"}
+        C -->|Yes| F[Accept imported data]
         C -->|No| E[Throw exception]
-        D -->|No| E
     end
 ```
+
+The extracted (raw) JSON is the value to be stored on the hard drive.
+
+### Mapping to generic Schema.org objects - JsonParser
+
+The representation of JSON objects and arrays in PHP is done using associative and indexed arrays, respectively.
+This makes it rather hard to handle complex type structures in plain PHP.
+A first step is to translate these generic PHP arrays into a set of structured objects.
+These objects are created by classes that represent the basic building blocks of JSON like `JSONObject`, `JSONArray`, `JSONString`, `JSONInteger`, `JSONBool`, and `JSONFloat`.
+
+It might be favorable to define conversion methods in the classes in order to handle bad syntax errors later on in a simpler way.
+
+In order to make the structures as generic as possible, all objects are extracted in a plain graph layout.
+That is, the output of the JsonParser is a mapping from unique IDs to `JSONObject`s.
+If an object has no ID, a unique ID is temporarily generated.
+Each object within another object will be spread out.
+That means that the following JSON representation
+```json
+{
+    @context: "https://schema.org",
+    @type: "Recipe",
+    name: "Baked bananas",
+    author: {
+        @type: "Person",
+        name: "Santa Claus"
+    }
+}
+```
+will be flattened out to something like
+```json
+[
+    {
+        @context: "https://schema.org",
+        @type: "Recipe",
+        @identifier: 1,
+        name: "Baked bananas",
+        author: {
+            @identifier: 2
+        }
+    },
+    {
+        @context: "https://schema.org",
+        @type: "Person",
+        @identifier: 2,
+        name: "Santa Claus"
+    }
+]
+```
+
+_Side Node: I am unsure if it is `@identifier`, `identifier`, or something else. Must be adopted accordingly._
+
+In PHP this is represented as an associative array mapping from the identifiers (here `1` and  `2`) to corresponding `JSONObejct`s.
+By using PHP's magic methods or a common set of getter/setter, all attributes (like `name` or `author`) can be requested.
+For the special case of references to objects, it might make sense to define a special class `JSONObjectLink`.
 
 ### Mapper
 
