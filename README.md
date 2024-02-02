@@ -29,13 +29,13 @@ flowchart LR
 ```
 
 During the export the complete parsing chain needs to be carried out.
-Nevertheless, in order to make the app extensible with respect to future enhancements, a rather raw version will be stored on disk for persistence.
+Nevertheless, in order to make the app extensible with respect to future enhancements, a rather raw version of the initial input data will be stored on disk for persistence.
 
 ### Extracting basic JSON data - RawParser
 
-The input of a reciper can be manifold: a URL pointing to a website, a JSON string, HTML code, an image of a cookbook page, a PDF, etc.
-The dedicated parser tries to extract the recipe data from the input and creates a valid JSON string.
-For a website this could mean, e.g., looking for an `ld+json` element and extracting this.
+The input of a recipe can be manifold: a URL pointing to a website, a JSON string, HTML code, an image of a cookbook page, a PDF, etc.
+The dedicated parser tries to extract the recipe data from the input and creates a valid JSON representation.
+For a website this could mean, e.g., looking for and extracting an `ld+json` element.
 
 The goal of the first stage (the `RawParser`) is to create a common data format of raw data.
 For simplicity, JSON is used here.
@@ -44,12 +44,11 @@ This format must be parsable by the `json_decode` method in PHP.
 ```mermaid
 flowchart TD
     subgraph "`**RecipeParser**`"
-        * -->|Input|B[RecipeExtractor]
-        B -- raw string --> cleaner[JSON cleaner & parser]
-        cleaner -->|JSON|C{"`JSON
-        parsable?`"}
-        C -->|Yes| F[Accept imported data]
-        C -->|No| E[Throw exception]
+        * -->|Input|EXTR[RecipeExtractor]
+        EXTR -- raw string --> CLEANER[JSON cleaner & parser]
+        CLEANER -->|JSON|Q_PARSABLE{"JSON parsable?"}
+        Q_PARSABLE -->|Yes| ACCEPT[Accept imported data]
+        Q_PARSABLE -->|No| EXCEPT[Throw exception]
     end
 ```
 
@@ -69,41 +68,44 @@ That is, the output of the JsonParser is a mapping from unique IDs to `JSONObjec
 If an object has no ID, a unique ID is temporarily generated.
 Each object within another object will be spread out.
 That means that the following JSON representation
+
 ```json
 {
-    @context: "https://schema.org",
-    @type: "Recipe",
-    name: "Baked bananas",
-    author: {
-        @type: "Person",
-        name: "Santa Claus"
+    "@context": "https://schema.org",
+    "@type": "Recipe",
+    "name": "Baked bananas",
+    "author": {
+        "@type": "Person",
+        "name": "Santa Claus"
     }
 }
 ```
+
 will be flattened out to something like
+
 ```json
 [
     {
-        @context: "https://schema.org",
-        @type: "Recipe",
-        @identifier: 1,
-        name: "Baked bananas",
-        author: {
-            @identifier: 2
+        "@context": "https://schema.org",
+        "@type": "Recipe",
+        "identifier": 1,
+        "name": "Baked bananas",
+        "author": {
+            "identifier": 2
         }
     },
     {
-        @context: "https://schema.org",
-        @type: "Person",
-        @identifier: 2,
-        name: "Santa Claus"
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "identifier": 2,
+        "name": "Santa Claus"
     }
 ]
 ```
 
-_Side Node: I am unsure if it is `@identifier`, `identifier`, or something else. Must be adopted accordingly._
+_Side Note: I am unsure if it is `@identifier`, `identifier`, or something else. Must be adopted accordingly._
 
-In PHP this is represented as an associative array mapping from the identifiers (here `1` and  `2`) to corresponding `JSONObejct`s.
+In PHP this is represented as an associative array mapping from the identifiers (here `1` and  `2`) to corresponding `JSONObject`s.
 By using PHP's magic methods or a common set of getter/setter, all attributes (like `name` or `author`) can be requested.
 For the special case of references to objects, it might make sense to define a special class `JSONObjectLink`.
 
