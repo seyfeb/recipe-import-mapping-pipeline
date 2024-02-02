@@ -16,6 +16,12 @@ class HowToSupply extends BaseSchemaOrgEntity
     public string $Name;
 
     /**
+     * @inheritDoc
+     */
+    protected static array $RequiredProperties = ['name'];
+
+
+    /**
      * Creates a new `HowToSupply` instance
      * @param string $name
      */
@@ -28,14 +34,14 @@ class HowToSupply extends BaseSchemaOrgEntity
      * @inheritDoc
      */
     public static function fromJson(array $json) : ?HowToSupply {
-        if(!isset($json['name'])) {
+        if(!HowToSupply::checkRequiredProperties($json)) {
             return null;
         }
 
         try {
             $name = JsonMapper::ExtractString($json['name']);
         }
-        catch (JsonMappingException){
+        catch (JsonMappingException) {
             return null;
         }
 
