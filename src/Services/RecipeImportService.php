@@ -2,8 +2,10 @@
 
 namespace RecipeImportPipeline\Services;
 
+use RecipeImportPipeline\Exceptions\ImportException;
 use RecipeImportPipeline\Exceptions\ParsingException;
 use RecipeImportPipeline\Interfaces\Parsers\IParser;
+use RecipeImportPipeline\Interfaces\Parsers\RecipeParser;
 
 class RecipeImportService implements \IRecipeImportService
 {
@@ -34,28 +36,12 @@ class RecipeImportService implements \IRecipeImportService
     /**
      * @inheritDoc
      */
-    public function importRecipe($input): ?array {
+    public function importRecipe($input): void {
         // Step 1: Input Validation
-        // Validate the input data to ensure it is in the expected format and contains necessary information.
+        // Validate the input data to ensure it is in on of the expected formats supported by at least one of the parsers?
 
         // Step 2: Parsing
         // Parse the input data to extract relevant information about the recipe.
-
-        // Step 3: Data Transformation
-        // Transform the parsed data into a standardized format suitable for further processing.
-
-        // Step 4: Validation
-        // Validate the parsed recipe data to ensure it meets certain criteria or constraints.
-
-        // Step 5: Persistence
-        // Persist the parsed recipe data to a storage system if necessary.
-
-        // Step 6: Return Result
-        // Return the parsed recipe data as an array or an object representing the recipe.
-
-        // Step 7: Error Handling
-        // Handle any errors or exceptions that occur during the import process gracefully.
-
 
         // Example: This would try all parsers and return result of first successful
         $output = null;
@@ -68,6 +54,28 @@ class RecipeImportService implements \IRecipeImportService
             }
         }
 
-        return $output;
+        // Step 3: Data Transformation
+        // Transform the parsed data into a standardized format suitable for further processing.
+        $jsonParser = new JsonParser();
+        $jsonObjectRepresentation = $jsonParser->parse($output);
+
+        // Step 4: Validation
+        // Validate the parsed recipe data to ensure it meets certain criteria or constraints.
+
+        $recipeParser = new RecipeParser();
+        $recipeObjectRepresentation = $recipeParser->parse($jsonObjectRepresentation);
+
+        // Step 5: Persistence
+        // Persist the parsed recipe data to a storage system if necessary.
+        if($recipeObjectRepresentation !== null){
+            // Store initial raw data to disk
+        }
+        else{
+            throw new ImportException('No recipe data could be extracted from provided source.');
+        }
+
+        // TODO: Error Handling
+        // Handle any errors or exceptions that occur during the import process gracefully.
+
     }
 }
