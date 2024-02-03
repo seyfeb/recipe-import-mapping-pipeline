@@ -1,6 +1,6 @@
 <?php
 
-namespace RecipeImportPipeline\Interfaces;
+namespace RecipeImportPipeline\Interfaces\Entities;
 
 /**
  * Interface for classes that can be serialized to JSON.

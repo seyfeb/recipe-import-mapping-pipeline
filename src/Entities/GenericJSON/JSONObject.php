@@ -1,7 +1,7 @@
 <?php
 
 namespace RecipeImportPipeline\Entities\GenericJSON;
-use RecipeImportPipeline\Interfaces\IJSONSerializable;
+use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
 
 /**
  * Represents a JSON object.
