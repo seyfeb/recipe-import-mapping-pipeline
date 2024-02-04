@@ -5,7 +5,7 @@ namespace RecipeImportPipeline\Interfaces\Parsers;
 use Exception;
 
 /**
- * Parses PHP objects for recipe data and persists it.
+ * Parses PHP objects for recipe data.
  */
 class RecipeParser implements IParser {
     /**

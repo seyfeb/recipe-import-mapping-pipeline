@@ -2,12 +2,13 @@
 
 namespace RecipeImportPipeline\Entities\GenericJSON;
 
+use RecipeImportPipeline\Interfaces\Entities\IJsonType;
 use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
 
 /**
  * Represents a JSON string.
  */
-class JSONString implements IBaseJsonType, IJSONSerializable
+class JSONString implements IJsonType, IJSONSerializable
 {
     /** @var string $value The value stored in the object. */
     private string $value;

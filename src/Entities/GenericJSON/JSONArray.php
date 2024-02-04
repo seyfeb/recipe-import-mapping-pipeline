@@ -4,13 +4,14 @@ namespace RecipeImportPipeline\Entities\GenericJSON;
 
 use ArrayIterator;
 use IteratorAggregate;
+use RecipeImportPipeline\Interfaces\Entities\IJsonType;
 use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
 use Traversable;
 
 /**
  * Represents a JSON array.
  */
-class JSONArray implements IteratorAggregate, IBaseJsonType, IJSONSerializable
+class JSONArray implements IteratorAggregate, IJsonType, IJSONSerializable
 {
     /** @var array $data The data stored in the array. */
     private $data;
@@ -27,10 +28,10 @@ class JSONArray implements IteratorAggregate, IBaseJsonType, IJSONSerializable
     /**
      * Add an item to the array.
      *
-     * @param IBaseJsonType $item The item to add.
+     * @param IJsonType $item The item to add.
      * @return void
      */
-    public function add(IBaseJsonType $item): void {
+    public function add(IJsonType $item): void {
         $this->data[] = $item;
     }
 

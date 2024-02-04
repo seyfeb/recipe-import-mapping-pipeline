@@ -2,12 +2,13 @@
 
 namespace RecipeImportPipeline\Entities\GenericJSON;
 
+use RecipeImportPipeline\Interfaces\Entities\IJsonType;
 use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
 
 /**
  * Represents a JSON integer.
  */
-class JSONInteger implements IBaseJsonType, IJSONSerializable
+class JSONInteger implements IJsonType, IJSONSerializable
 {
     /** @var int $value The value stored in the object. */
     private $value;
@@ -35,5 +36,6 @@ class JSONInteger implements IBaseJsonType, IJSONSerializable
     public function toJSON(): string
     {
         // TODO: Implement toJSON() method.
+        return '';
     }
 }

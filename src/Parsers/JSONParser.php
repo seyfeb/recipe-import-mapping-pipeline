@@ -3,13 +3,13 @@
 namespace RecipeImportPipeline\Parsers;
 
 use Exception;
-use RecipeImportPipeline\Entities\GenericJSON\IBaseJsonType;
 use RecipeImportPipeline\Entities\GenericJSON\JSONArray;
 use RecipeImportPipeline\Entities\GenericJSON\JSONBool;
 use RecipeImportPipeline\Entities\GenericJSON\JSONFloat;
 use RecipeImportPipeline\Entities\GenericJSON\JSONInteger;
 use RecipeImportPipeline\Entities\GenericJSON\JSONObject;
 use RecipeImportPipeline\Entities\GenericJSON\JSONString;
+use RecipeImportPipeline\Interfaces\Entities\IJsonType;
 use RecipeImportPipeline\Interfaces\Parsers\IParser;
 
 /**
@@ -67,7 +67,7 @@ class JSONParser implements IParser
      * @param array $json The JSON string to convert.
      * @return mixed The PHP objects converted from JSON.
      */
-    private function convertJsonToPhpObjectsRecursive(mixed $json): IBaseJsonType {
+    private function convertJsonToPhpObjectsRecursive(mixed $json): IJsonType {
 
         if (is_array($json)) {
             // Check if the JSON array is an object or an array

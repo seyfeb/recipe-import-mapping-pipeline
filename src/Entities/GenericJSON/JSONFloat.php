@@ -2,12 +2,13 @@
 
 namespace RecipeImportPipeline\Entities\GenericJSON;
 
+use RecipeImportPipeline\Interfaces\Entities\IJsonType;
 use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
 
 /**
  * Represents a JSON float.
  */
-class JSONFloat implements IBaseJsonType, IJSONSerializable
+class JSONFloat implements IJsonType, IJSONSerializable
 {
     /** @var float $value The value stored in the object. */
     private float $value;
@@ -36,5 +37,6 @@ class JSONFloat implements IBaseJsonType, IJSONSerializable
     public function toJSON(): string
     {
         // TODO: Implement toJSON() method.
+        return '';
     }
 }

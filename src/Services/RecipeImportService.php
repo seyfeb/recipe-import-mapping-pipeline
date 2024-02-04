@@ -5,23 +5,33 @@ namespace RecipeImportPipeline\Services;
 use RecipeImportPipeline\Exceptions\ImportException;
 use RecipeImportPipeline\Exceptions\ParsingException;
 use RecipeImportPipeline\Interfaces\Parsers\IParser;
-use RecipeImportPipeline\Interfaces\Parsers\JSONParser;
+use RecipeImportPipeline\Interfaces\Parsers\IRawParser;
 use RecipeImportPipeline\Interfaces\Parsers\RecipeParser;
+use RecipeImportPipeline\Parsers\FlattenJSONParser;
+use RecipeImportPipeline\Parsers\JSONParser;
 
 class RecipeImportService implements \IRecipeImportService
 {
-    /** @var IParser[] $parsers Parsers in the pipeline. */
-    private $parsers = [];
+    /** @var IRawParser[] $rawParsers Parsers in the pipeline. */
+    private array $rawParsers = [];
+
+    /** @var JSONParser $flattenJSONParser Parser for parsing the JSON input into PHP objects. */
+    private JSONParser $jsonParser;
+
+    /** @var RecipeParser $recipeParser Parser extracting recipe objects */
+    private RecipeParser $recipeParser;
 
     /**
      * Constructor for the Pipeline class.
      *
-     * @param IParser[] $parsers Array of parsers to be added to the pipeline.
+     * @param IRawParser[] $rawParsers Array of parsers to be added to the pipeline.
      */
-    public function __construct(array $parsers) {
-        foreach ($parsers as $parser) {
+    public function __construct(array $rawParsers, JSONParser $jsonParser, FlattenJSONParser $flattenJSONParser) {
+        foreach ($rawParsers as $parser) {
             $this->addParser($parser);
         }
+        $this->$jsonParser = $jsonParser;
+        $this->$flattenJSONParser = $flattenJSONParser;
     }
 
     /**
@@ -30,8 +40,9 @@ class RecipeImportService implements \IRecipeImportService
      * @param IParser $parser The parser to add.
      * @return void
      */
-    public function addParser(IParser $parser) {
-        $this->parsers[] = $parser;
+    public function addParser(IParser $parser): void
+    {
+        $this->rawParsers[] = $parser;
     }
 
     /**
@@ -46,7 +57,7 @@ class RecipeImportService implements \IRecipeImportService
 
         // Example: This would try all parsers and return result of first successful
         $output = null;
-        foreach ($this->parsers as $parser) {
+        foreach ($this->rawParsers as $parser) {
             try {
                 $output = $parser->parse($input);
                 break;
@@ -57,18 +68,16 @@ class RecipeImportService implements \IRecipeImportService
 
         // Step 3: Data Transformation
         // Transform the parsed data into a standardized format suitable for further processing.
-        $jsonParser = new JsonParser();
-        $jsonObjectRepresentation = $jsonParser->parse($output);
+        $jsonObjectRepresentation = $this->jsonParser->parse($output);
 
         // Step 4: Validation
         // Validate the parsed recipe data to ensure it meets certain criteria or constraints.
-
-        $recipeParser = new RecipeParser();
-        $recipeObjectRepresentation = $recipeParser->parse($jsonObjectRepresentation);
+        $recipeObjectRepresentation = $this->recipeParser->parse($jsonObjectRepresentation);
 
         // Step 5: Persistence
         // Persist the parsed recipe data to a storage system if necessary.
         if($recipeObjectRepresentation !== null){
+            // TODO
             // Store initial raw data to disk
         }
         else{

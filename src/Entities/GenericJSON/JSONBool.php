@@ -2,12 +2,13 @@
 
 namespace RecipeImportPipeline\Entities\GenericJSON;
 
+use RecipeImportPipeline\Interfaces\Entities\IJsonType;
 use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
 
 /**
  * Represents a JSON boolean.
  */
-class JSONBool implements IBaseJsonType, IJSONSerializable
+class JSONBool implements IJsonType, IJSONSerializable
 {
     /** @var bool $value The value stored in the object. */
     private bool $value;
