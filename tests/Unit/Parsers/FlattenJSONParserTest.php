@@ -40,6 +40,46 @@ class FlattenJSONParserTest extends TestCase
         $this->assertEquals($expectedOutput, $output);
     }
 
+
+    public function testParseFlatJsonWithArray() {
+        $input = '{
+            "@context": "https://schema.org",
+            "@type": "Recipe",
+            "name": "Baked bananas",
+            "author": [
+                {
+                    "@type": "Person",
+                    "name": "Santa Claus"
+                },
+                "Some elves"
+            ]
+        }';
+
+        $expectedOutput = [
+            1 => [
+                "@context" => "https://schema.org",
+                "@type" => "Recipe",
+                "name" => "Baked bananas",
+                "author" => [
+                    [
+                        "@id" => 2
+                    ],
+                    "Some elves"
+                ],
+                "@id" => 1
+            ],
+            2 => [
+                "@type" => "Person",
+                "name" => "Santa Claus",
+                "@id" => 2
+            ]
+        ];
+
+        $parser = new FlattenJsonParser();
+        $output = $parser->parse($input);
+        $this->assertEquals($expectedOutput, $output);
+    }
+
     public function testParseNestedJson() {
         $input = '{
             "@context": "https://schema.org",

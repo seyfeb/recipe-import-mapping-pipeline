@@ -25,7 +25,12 @@ class FlattenJSONParser implements IParser
      */
     public function parse($input): array {
         // Decode the JSON input
-        $json = json_decode($input, true);
+        if(is_string($input)) {
+            $json = json_decode($input, true);
+        }
+        else{
+            $json = $input;
+        }
 
         // Check if decoding was successful
         if ($json === null && json_last_error() !== JSON_ERROR_NONE) {
@@ -57,22 +62,24 @@ class FlattenJSONParser implements IParser
 
         // Replace parent property with reference to extracted object
         if ($parentId !== null) {
-            // Search for the property in the parent object and replace it with the identifier
-            foreach ($this->flattenedRepresentation[$parentId] as $key => &$value) {
-                if ($value === $json) {
-                    $value = ['@id' => $objectId];
-                    break;
-                }
-            }
-            // important! ;)
-            unset($value);
+            $this->replaceObjectInParent($this->flattenedRepresentation[$parentId], $json, $objectId);
         }
 
         // Recursively process each property of the object
         foreach ($json as $key => $value) {
-            if (is_array($value) && count($value) > 0 && !isset($value['@id'])) {
-                // If the property is an object and does not have an @id, recursively process it
-                $this->processJson($value, $objectId);
+            if (is_array($value)) {
+                if ($this->isObject($value)) {
+                    // If the property is an associative array (object), recursively process it
+                    $this->processJson($value, $objectId);
+                } else {
+                    // If the property is an indexed array, iterate over its elements
+                    foreach ($value as $index => $element) {
+                        if (is_array($element) && $this->isObject($element)) {
+                            // If the array element is an associative array (object), recursively process it
+                            $this->processJson($element, $objectId);
+                        }
+                    }
+                }
             }
         }
     }
@@ -84,5 +91,43 @@ class FlattenJSONParser implements IParser
      */
     private function generateIdentifier(): int {
         return $this->identifier++;
+    }
+
+    /**
+     * Check if an array is an object (associative array).
+     *
+     * @param array $array The array to check.
+     * @return bool True if the array is an object, false otherwise.
+     */
+    private function isObject(array $array): bool {
+        return count(array_filter(array_keys($array), 'is_string')) > 0;
+    }
+
+
+    /**
+     * Replace the object in the parent array with its an object with identifier pointing to the extracted object.
+     *
+     * @param array $haystack The JSON in which to search for the object to be replaced.
+     * @param array $jsonToReplace The JSON object that should be replaced with the ID.
+     * @param int $replacedObjectId The ID of the object to be replaced.
+     * @return void
+     */
+    private function replaceObjectInParent(array &$haystack, array $jsonToReplace, int $replacedObjectId): void {
+        // Found object, replace with id
+        if($haystack === $jsonToReplace){
+            $haystack = ['@id' => $replacedObjectId];
+            return;
+        }
+
+        // Recursively search for the object in the parent array and replace it with the identifier
+        foreach ($haystack as &$value) {
+            if (is_array($value) && $value !== $haystack) {
+                $this->replaceObjectInParent($value, $jsonToReplace, $replacedObjectId);
+            } elseif ($value === $jsonToReplace) {
+                $value = ['@id' => $replacedObjectId];
+                break;
+            }
+        }
+        unset($value);
     }
 }
