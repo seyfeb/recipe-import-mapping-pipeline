@@ -1,11 +1,10 @@
 <?php
 
-namespace RecipeImportPipeline\Tests\Unit\Entities;
+namespace RecipeImportPipeline\tests\Unit\Entities\SchemaOrg;
 
-use RecipeImportPipeline\Entities\HowToDirection;
 use PHPUnit\Framework\TestCase;
-use RecipeImportPipeline\Entities\HowToSupply;
-use RecipeImportPipeline\Exceptions\JsonMappingException;
+use RecipeImportPipeline\Entities\SchemaOrg\HowToDirection;
+use RecipeImportPipeline\Entities\SchemaOrg\HowToSupply;
 
 class HowToDirectionTest extends TestCase
 {

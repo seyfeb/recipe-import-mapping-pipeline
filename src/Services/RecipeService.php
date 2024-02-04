@@ -2,6 +2,8 @@
 
 namespace RecipeImportPipeline\Services;
 
+use ExportDataFormat;
+use IRecipeService;
 use RecipeImportPipeline\Exceptions\ImportException;
 use RecipeImportPipeline\Exceptions\ParsingException;
 use RecipeImportPipeline\Interfaces\Parsers\IParser;
@@ -10,7 +12,7 @@ use RecipeImportPipeline\Interfaces\Parsers\RecipeParser;
 use RecipeImportPipeline\Parsers\FlattenJSONParser;
 use RecipeImportPipeline\Parsers\JSONParser;
 
-class RecipeImportService implements \IRecipeImportService
+class RecipeService implements IRecipeService
 {
     /** @var IRawParser[] $rawParsers Parsers in the pipeline. */
     private array $rawParsers = [];
@@ -86,6 +88,14 @@ class RecipeImportService implements \IRecipeImportService
 
         // TODO: Error Handling
         // Handle any errors or exceptions that occur during the import process gracefully.
+    }
 
+    /**
+     * @inheritDoc
+     */
+    public function exportRecipe(string $id, ExportDataFormat $dataFormat = ExportDataFormat::SchemaOrg): mixed
+    {
+        // TODO: Implement exportRecipe() method.
+        return  null;
     }
 }

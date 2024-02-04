@@ -1,10 +1,9 @@
 <?php
 
-namespace RecipeImportPipeline\Tests\Unit\Entities;
+namespace RecipeImportPipeline\tests\Unit\Entities\SchemaOrg;
 
-use RecipeImportPipeline\Entities\HowToSupply;
 use PHPUnit\Framework\TestCase;
-use RecipeImportPipeline\Exceptions\JsonMappingException;
+use RecipeImportPipeline\Entities\SchemaOrg\HowToSupply;
 
 class HowToSupplyTest extends TestCase
 {

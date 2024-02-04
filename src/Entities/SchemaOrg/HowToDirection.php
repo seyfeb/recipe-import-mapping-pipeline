@@ -1,6 +1,6 @@
 <?php
 
-namespace RecipeImportPipeline\Entities;
+namespace RecipeImportPipeline\Entities\SchemaOrg;
 
 use RecipeImportPipeline\Exceptions\JsonMappingException;
 use RecipeImportPipeline\Utilities\JsonMapper;
