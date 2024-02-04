@@ -5,6 +5,7 @@ namespace RecipeImportPipeline\Services;
 use RecipeImportPipeline\Exceptions\ImportException;
 use RecipeImportPipeline\Exceptions\ParsingException;
 use RecipeImportPipeline\Interfaces\Parsers\IParser;
+use RecipeImportPipeline\Interfaces\Parsers\JSONParser;
 use RecipeImportPipeline\Interfaces\Parsers\RecipeParser;
 
 class RecipeImportService implements \IRecipeImportService

@@ -88,22 +88,22 @@ will be flattened out to something like
     {
         "@context": "https://schema.org",
         "@type": "Recipe",
-        "identifier": 1,
+        "@id": 1,
         "name": "Baked bananas",
         "author": {
-            "identifier": 2
+            "@id": 2
         }
     },
     {
         "@context": "https://schema.org",
         "@type": "Person",
-        "identifier": 2,
+        "@id": 2,
         "name": "Santa Claus"
     }
 ]
 ```
 
-_Side Note: I am unsure if it is `@identifier`, `identifier`, or something else. Must be adopted accordingly._
+_Side Note: I am unsure if it is `@identifier`, `identifier`, `@id` or something else. Must be adopted accordingly. [Stackoverflow post `@id`](https://stackoverflow.com/questions/34761970/schema-org-json-ld-reference/34776122#34776122)_
 
 In PHP this is represented as an associative array mapping from the identifiers (here `1` and  `2`) to corresponding `JSONObject`s.
 By using PHP's magic methods or a common set of getter/setter, all attributes (like `name` or `author`) can be requested.
