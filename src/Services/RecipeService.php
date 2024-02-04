@@ -2,10 +2,14 @@
 
 namespace RecipeImportPipeline\Services;
 
+use Exception;
 use ExportDataFormat;
+use IRecipeMapper;
 use IRecipeService;
 use RecipeImportPipeline\Exceptions\ImportException;
 use RecipeImportPipeline\Exceptions\ParsingException;
+use RecipeImportPipeline\Exceptions\RecipeExportException;
+use RecipeImportPipeline\Exceptions\RecipeNotFoundException;
 use RecipeImportPipeline\Interfaces\Parsers\IParser;
 use RecipeImportPipeline\Interfaces\Parsers\IRawParser;
 use RecipeImportPipeline\Interfaces\Parsers\RecipeParser;
@@ -23,17 +27,28 @@ class RecipeService implements IRecipeService
     /** @var RecipeParser $recipeParser Parser extracting recipe objects */
     private RecipeParser $recipeParser;
 
+    /** @var IRecipeMapper[] $rawParsers Parsers in the pipeline. */
+    private array $recipeMappers;
+
     /**
      * Constructor for the Pipeline class.
      *
      * @param IRawParser[] $rawParsers Array of parsers to be added to the pipeline.
+     * @param JSONParser $jsonParser JSON parser for converting JSON to PHP object representation.
+     * @param FlattenJSONParser $flattenJSONParser Parser for flattening the JSON structure.
+     * @param IRecipeMapper[] $recipeMappers Array of export mappers.
      */
-    public function __construct(array $rawParsers, JSONParser $jsonParser, FlattenJSONParser $flattenJSONParser) {
+    public function __construct(
+        array             $rawParsers,
+        JSONParser        $jsonParser,
+        FlattenJSONParser $flattenJSONParser,
+        array             $recipeMappers) {
         foreach ($rawParsers as $parser) {
             $this->addParser($parser);
         }
         $this->$jsonParser = $jsonParser;
         $this->$flattenJSONParser = $flattenJSONParser;
+        $this->recipeMappers = $recipeMappers;
     }
 
     /**
@@ -93,9 +108,30 @@ class RecipeService implements IRecipeService
     /**
      * @inheritDoc
      */
-    public function exportRecipe(string $id, ExportDataFormat $dataFormat = ExportDataFormat::SchemaOrg): mixed
+    public function exportRecipe(string $id, ExportDataFormat $dataFormat = ExportDataFormat::SchemaOrg) : mixed
     {
-        // TODO: Implement exportRecipe() method.
-        return  null;
+        // Fetch recipe data
+        $recipeJson = null;
+        try{
+            // TODO Fetch unified-JSON recipe data from X
+        } catch (Exception){
+            throw new RecipeNotFoundException('Requested recipe with id ' . $id . ' could not be found.');
+        }
+
+        // Find the correct mapper for the requested output format
+        $mapper = null;
+        foreach ($this->recipeMappers as $mappy){
+            if($mappy->getFormat() === $dataFormat){
+                $mapper = $mappy;
+            }
+        }
+
+        // Check if mapper has been found
+        if($mapper === null){
+            throw new RecipeExportException('No mapper for requested export format found.');
+        }
+
+        // Execute mapping and return result
+        return $mapper->map($recipeJson);
     }
 }
