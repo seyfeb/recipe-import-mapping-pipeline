@@ -8,12 +8,12 @@ The pipeline is planned for importing recipes from multiple input sources (recip
 
 Currently implemented
 
-- [ ] Base concept for import, should be extensible to support multiple import modules
+- [x] Base concept for import, should be extensible to support multiple import modules
 - [ ] Importing data
 - [ ] Testing if imported data contains recipe data
-- [ ] Converting imported data to a standardized format for all input sources
+- [x] Converting imported data to a standardized format for all input sources
 - [x] Recipe classes based on `schema.org/Recipe` with a subset of properties for demonstration purposes
-- [ ] Mapping JSON to `Recipe`, etc. classes
+- [x] Mapping JSON to `Recipe`, etc. classes
 
 
 ## 🔀 Flow
