@@ -3,6 +3,6 @@
 namespace RecipeImportPipeline\Interfaces\Parsers;
 
 /**
- * Interface for raw parsers.
+ * Marker interface for raw parsers.
  */
-interface IRawParser extends IParser { }
+interface IRawParser { }

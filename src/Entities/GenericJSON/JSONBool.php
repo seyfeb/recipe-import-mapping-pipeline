@@ -36,8 +36,6 @@ class JSONBool implements IJsonType, IJSONSerializable
      */
     public function toJSON(): string
     {
-        // TODO: Implement toJSON() method.
-
-        return '';
+        return $this->value ? 'true' : 'false';
     }
 }

@@ -2,7 +2,6 @@
 
 namespace RecipeImportPipeline\Exceptions;
 
-class ParsingException extends \Exception
-{
+use Exception;
 
-}
+class ParsingException extends Exception { }

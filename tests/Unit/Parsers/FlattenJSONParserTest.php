@@ -2,8 +2,8 @@
 
 namespace RecipeImportPipeline\Tests\Unit\Parsers;
 
-use RecipeImportPipeline\Parsers\FlattenJSONParser;
 use PHPUnit\Framework\TestCase;
+use RecipeImportPipeline\Parsers\Import\FlattenJSONParser;
 
 class FlattenJSONParserTest extends TestCase
 {

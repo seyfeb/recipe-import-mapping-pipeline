@@ -36,8 +36,6 @@ class JSONString implements IJsonType, IJSONSerializable
      */
     public function toJSON(): string
     {
-        // TODO: Implement toJSON() method.
-
-        return '';
+        return json_encode($this->value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 }

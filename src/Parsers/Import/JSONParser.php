@@ -1,6 +1,6 @@
 <?php
 
-namespace RecipeImportPipeline\Parsers;
+namespace RecipeImportPipeline\Parsers\Import;
 
 use Exception;
 use RecipeImportPipeline\Entities\GenericJSON\JSONArray;

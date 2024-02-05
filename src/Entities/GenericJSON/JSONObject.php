@@ -8,7 +8,7 @@ use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
  * Represents a JSON object.
  */
 class JSONObject implements IJsonType, IJSONSerializable {
-    /** @var array $data The data stored in the object. */
+    /** @var array<IJsonType> $data The data stored in the object. */
     private array $data;
 
     /**
@@ -46,8 +46,14 @@ class JSONObject implements IJsonType, IJSONSerializable {
      */
     public function toJSON(): string
     {
-        // TODO: Implement toJSON() method.
-
-        return '';
+        $json = [];
+        foreach ($this->data as $key => $value) {
+            if ($value instanceof IJSONSerializable) {
+                $json[$key] = json_decode($value->toJSON());
+            } elseif ($value instanceof IJsonType) {
+                $json[$key] = $value->getValue();
+            }
+        }
+        return json_encode($json);
     }
 }

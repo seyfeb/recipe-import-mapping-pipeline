@@ -2,4 +2,6 @@
 
 namespace RecipeImportPipeline\Exceptions;
 
-class ImportException extends \Exception { }
+use Exception;
+
+class ImportException extends Exception { }

@@ -2,13 +2,13 @@
 
 namespace RecipeImportPipeline\Tests\Integration\Parsers;
 
+use PHPUnit\Framework\TestCase;
 use RecipeImportPipeline\Entities\GenericJSON\JSONArray;
 use RecipeImportPipeline\Entities\GenericJSON\JSONInteger;
 use RecipeImportPipeline\Entities\GenericJSON\JSONObject;
 use RecipeImportPipeline\Entities\GenericJSON\JSONString;
-use RecipeImportPipeline\Parsers\FlattenJSONParser;
-use RecipeImportPipeline\Parsers\JSONParser;
-use PHPUnit\Framework\TestCase;
+use RecipeImportPipeline\Parsers\Import\FlattenJSONParser;
+use RecipeImportPipeline\Parsers\Import\JSONParser;
 
 class JSONParserIntegrationTest extends TestCase
 {

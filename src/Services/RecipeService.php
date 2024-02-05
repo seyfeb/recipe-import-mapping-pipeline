@@ -12,9 +12,9 @@ use RecipeImportPipeline\Exceptions\RecipeExportException;
 use RecipeImportPipeline\Exceptions\RecipeNotFoundException;
 use RecipeImportPipeline\Interfaces\Parsers\IParser;
 use RecipeImportPipeline\Interfaces\Parsers\IRawParser;
-use RecipeImportPipeline\Interfaces\Parsers\RecipeParser;
-use RecipeImportPipeline\Parsers\FlattenJSONParser;
-use RecipeImportPipeline\Parsers\JSONParser;
+use RecipeImportPipeline\Parsers\Import\FlattenJSONParser;
+use RecipeImportPipeline\Parsers\Import\JSONParser;
+use RecipeImportPipeline\Parsers\Import\RecipeParser;
 
 class RecipeService implements IRecipeService
 {
