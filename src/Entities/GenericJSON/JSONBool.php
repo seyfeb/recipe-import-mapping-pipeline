@@ -2,13 +2,15 @@
 
 namespace RecipeImportPipeline\Entities\GenericJSON;
 
+use RecipeImportPipeline\Interfaces\Parsers\IJSONObjectParser;
 use RecipeImportPipeline\Interfaces\Entities\IJsonType;
 use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
+use RecipeImportPipeline\Interfaces\Entities\IVisitableJSONObject;
 
 /**
  * Represents a JSON boolean.
  */
-class JSONBool implements IJsonType, IJSONSerializable
+class JSONBool implements IJsonType, IJSONSerializable, IVisitableJSONObject
 {
     /** @var bool $value The value stored in the object. */
     private bool $value;
@@ -37,5 +39,13 @@ class JSONBool implements IJsonType, IJSONSerializable
     public function toJSON(): string
     {
         return $this->value ? 'true' : 'false';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function parseWith(IJSONObjectParser $parser) : void
+    {
+        $parser->handleBool($this);
     }
 }

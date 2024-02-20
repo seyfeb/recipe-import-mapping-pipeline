@@ -1,13 +1,16 @@
 <?php
 
 namespace RecipeImportPipeline\Entities\GenericJSON;
+
+use RecipeImportPipeline\Interfaces\Parsers\IJSONObjectParser;
 use RecipeImportPipeline\Interfaces\Entities\IJsonType;
 use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
+use RecipeImportPipeline\Interfaces\Entities\IVisitableJSONObject;
 
 /**
  * Represents a JSON object.
  */
-class JSONObject implements IJsonType, IJSONSerializable {
+class JSONObject implements IJsonType, IJSONSerializable, IVisitableJSONObject {
     /** @var array<IJsonType> $data The data stored in the object. */
     private array $data;
 
@@ -55,5 +58,13 @@ class JSONObject implements IJsonType, IJSONSerializable {
             }
         }
         return json_encode($json);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function parseWith(IJSONObjectParser $parser) : void
+    {
+        $parser->handleObject($this);
     }
 }

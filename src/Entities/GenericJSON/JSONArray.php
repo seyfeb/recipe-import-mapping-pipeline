@@ -3,15 +3,17 @@
 namespace RecipeImportPipeline\Entities\GenericJSON;
 
 use ArrayIterator;
+use RecipeImportPipeline\Interfaces\Parsers\IJSONObjectParser;
 use IteratorAggregate;
 use RecipeImportPipeline\Interfaces\Entities\IJsonType;
 use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
+use RecipeImportPipeline\Interfaces\Entities\IVisitableJSONObject;
 use Traversable;
 
 /**
  * Represents a JSON array.
  */
-class JSONArray implements \ArrayAccess, IteratorAggregate, IJsonType, IJSONSerializable
+class JSONArray implements \ArrayAccess, IteratorAggregate, IJsonType, IJSONSerializable, IVisitableJSONObject
 {
     /** @var array $data The data stored in the array. */
     private array $data;
@@ -82,5 +84,13 @@ class JSONArray implements \ArrayAccess, IteratorAggregate, IJsonType, IJSONSeri
         }
 
         return '[' . implode(',', $jsonItems) . ']';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function parseWith(IJSONObjectParser $parser) : void
+    {
+        $parser->handleArray($this);
     }
 }

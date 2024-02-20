@@ -2,13 +2,15 @@
 
 namespace RecipeImportPipeline\Entities\GenericJSON;
 
+use RecipeImportPipeline\Interfaces\Parsers\IJSONObjectParser;
 use RecipeImportPipeline\Interfaces\Entities\IJsonType;
 use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
+use RecipeImportPipeline\Interfaces\Entities\IVisitableJSONObject;
 
 /**
  * Represents a JSON float.
  */
-class JSONFloat implements IJsonType, IJSONSerializable
+class JSONFloat implements IJsonType, IJSONSerializable, IVisitableJSONObject
 {
     /** @var float $value The value stored in the object. */
     private float $value;
@@ -37,5 +39,13 @@ class JSONFloat implements IJsonType, IJSONSerializable
     public function toJSON(): string
     {
         return strval($this->value);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function parseWith(IJSONObjectParser $parser) : void
+    {
+        $parser->handleFloat($this);
     }
 }
