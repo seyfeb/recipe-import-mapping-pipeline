@@ -2,6 +2,4 @@
 
 namespace RecipeImportPipeline\Interfaces\Entities;
 
-interface IJsonType {
-    public function getValue();
-}
+interface IInstruction { }

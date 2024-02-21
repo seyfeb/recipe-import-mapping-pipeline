@@ -5,6 +5,7 @@ namespace RecipeImportPipeline\Entities\SchemaOrg\Utility;
 use ArrayAccess;
 use ArrayIterator;
 use IteratorAggregate;
+use RecipeImportPipeline\Interfaces\Entities\IInstruction;
 use RecipeImportPipeline\Interfaces\Entities\IJsonType;
 
 class Instructions implements ArrayAccess, IteratorAggregate, IJsonType

@@ -2,8 +2,8 @@
 
 namespace RecipeImportPipeline\Entities\SchemaOrg;
 
-use RecipeImportPipeline\Entities\SchemaOrg\Utility\ISupply;
 use RecipeImportPipeline\Exceptions\JsonMappingException;
+use RecipeImportPipeline\Interfaces\Entities\ISupply;
 use RecipeImportPipeline\Utilities\JsonMapper;
 
 /**

@@ -2,12 +2,9 @@
 
 namespace RecipeImportPipeline\Entities\SchemaOrg;
 
-use RecipeImportPipeline\Entities\SchemaOrg\Utility\IInstruction;
 use RecipeImportPipeline\Entities\SchemaOrg\Utility\PlainText;
 use RecipeImportPipeline\Entities\SchemaOrg\Utility\Supplies;
-use RecipeImportPipeline\Exceptions\JsonMappingException;
-use RecipeImportPipeline\Utilities\JsonMapper;
-use RecipeImportPipeline\Utilities\TypeUtilities;
+use RecipeImportPipeline\Interfaces\Entities\IInstruction;
 
 class HowToDirection extends BaseSchemaOrgEntity implements IInstruction
 {

@@ -5,8 +5,8 @@ namespace RecipeImportPipeline\Entities\SchemaOrg\Utility;
 use ArrayAccess;
 use ArrayIterator;
 use IteratorAggregate;
-use RecipeImportPipeline\Entities\SchemaOrg\HowToSupply;
 use RecipeImportPipeline\Interfaces\Entities\IJsonType;
+use RecipeImportPipeline\Interfaces\Entities\ISupply;
 
 class Supplies implements ArrayAccess, IteratorAggregate, IJsonType
 {
