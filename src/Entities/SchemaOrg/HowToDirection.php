@@ -2,69 +2,85 @@
 
 namespace RecipeImportPipeline\Entities\SchemaOrg;
 
+use RecipeImportPipeline\Entities\SchemaOrg\Utility\IInstruction;
+use RecipeImportPipeline\Entities\SchemaOrg\Utility\PlainText;
+use RecipeImportPipeline\Entities\SchemaOrg\Utility\Supplies;
 use RecipeImportPipeline\Exceptions\JsonMappingException;
 use RecipeImportPipeline\Utilities\JsonMapper;
 use RecipeImportPipeline\Utilities\TypeUtilities;
 
-class HowToDirection extends BaseSchemaOrgEntity
+class HowToDirection extends BaseSchemaOrgEntity implements IInstruction
 {
     /**
-     * @var array<string> Textual content of the direction.
+     * @var string[] Textual content of the direction.
      */
-    public array $Text;
+    private array $Text;
 
     /**
-     * @var array<HowToSupply> List of supplies for the direction.
+     * @var Supplies|null List of supplies for the direction.
      */
-    public array $Supply;
+    private ?Supplies $Supply;
 
     /**
-     * @param string[] $Text
-     * @param HowToSupply[] $Supply
+     * @return PlainText[]
      */
-    public function __construct(array $Text, array $Supply)
+    public function getText(): array
     {
-        $this->Text = $Text;
-        $this->Supply = $Supply;
+        return $this->Text;
     }
 
+    public function getSupply(): ?Supplies
+    {
+        return $this->Supply;
+    }
+
+    /**
+     * @param string[] $text
+     * @param Supplies|null $supply
+     */
+    public function __construct(array $text, ?Supplies $supply)
+    {
+        $this->Text = $text;
+        $this->Supply = $supply;
+    }
 
     /**
      * @inheritDoc
      */
     public static function fromJson(array $json) : ?HowToDirection {
-        // Allowed value for `supply` is string array
-        if(isset($json['text'])) {
-            try {
-                $text = JsonMapper::ExtractStringArray($json['text']);
-            } catch (JsonMappingException) {
-                return null;
-            }
-        }
-
-        // Allowed values for `supply` is array of string | HowToSupply
-        $supply = array();
-        if(isset($json['supply'])) {
-            $supplyArray = TypeUtilities::as_cleaned_array($json['supply']);
-
-            foreach ($supplyArray as $item) {
-                if (jsonMapper::isSchemaObject($item, 'HowToSupply', false)) {
-                    if($suppl = HowToSupply::fromJson($item)) {
-                        $supply[] = $suppl;
-                        continue;
-                    }
-                }
-                try {
-                    $s = JsonMapper::ExtractString($item);
-                    if($s){
-                        $supply[] = new HowToSupply($s);
-                    }
-                } catch (JsonMappingException) {
-                   // continue;
-                }
-            }
-        }
-
-        return new HowToDirection($text ?? [], $supply);
+        return null;
+//        // Allowed value for `supply` is string array
+//        if(isset($json['text'])) {
+//            try {
+//                $text = JsonMapper::ExtractStringArray($json['text']);
+//            } catch (JsonMappingException) {
+//                return null;
+//            }
+//        }
+//
+//        // Allowed values for `supply` is array of string | HowToSupply
+//        $supply = array();
+//        if(isset($json['supply'])) {
+//            $supplyArray = TypeUtilities::as_cleaned_array($json['supply']);
+//
+//            foreach ($supplyArray as $item) {
+//                if (jsonMapper::isSchemaObject($item, 'HowToSupply', false)) {
+//                    if($suppl = HowToSupply::fromJson($item)) {
+//                        $supply[] = $suppl;
+//                        continue;
+//                    }
+//                }
+//                try {
+//                    $s = JsonMapper::ExtractString($item);
+//                    if($s){
+//                        $supply[] = new HowToSupply($s);
+//                    }
+//                } catch (JsonMappingException) {
+//                   // continue;
+//                }
+//            }
+//        }
+//
+//        return new HowToDirection($text ?? [], $supply);
     }
 }
