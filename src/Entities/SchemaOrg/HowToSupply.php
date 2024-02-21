@@ -2,18 +2,24 @@
 
 namespace RecipeImportPipeline\Entities\SchemaOrg;
 
+use RecipeImportPipeline\Entities\SchemaOrg\Utility\ISupply;
 use RecipeImportPipeline\Exceptions\JsonMappingException;
 use RecipeImportPipeline\Utilities\JsonMapper;
 
 /**
  * A supply (e.g., ingredient).
  */
-class HowToSupply extends BaseSchemaOrgEntity
+class HowToSupply extends BaseSchemaOrgEntity implements ISupply
 {
     /**
      * @var string Name of the supply.
      */
-    public string $Name;
+    private string $Name;
+
+    public function getName(): string
+    {
+        return $this->Name;
+    }
 
     /**
      * @inheritDoc
