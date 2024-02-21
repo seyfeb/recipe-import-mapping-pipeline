@@ -14,13 +14,13 @@ class HowToSupplyTest extends TestCase
         ];
         $supply = HowToSupply::fromJson($json);
         $this->assertInstanceOf(HowToSupply::class, $supply);
-        $this->assertEquals('Test Supply', $supply->Name);
+        $this->assertEquals('Test Supply', $supply->getName);
 
         // Test with 'name' array value
         $json = ['name' => ['name1', 'name2']];
         $supply = HowToSupply::fromJson($json);
         $this->assertInstanceOf(HowToSupply::class, $supply);
-        $this->assertEquals('name1', $supply->Name);
+        $this->assertEquals('name1', $supply->getName);
     }
 
 
