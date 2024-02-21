@@ -3,14 +3,11 @@
 namespace RecipeImportPipeline\Entities\GenericJSON;
 
 use RecipeImportPipeline\Interfaces\Parsers\IJSONObjectParser;
-use RecipeImportPipeline\Interfaces\Entities\IVisitableJSONObject;
-use RecipeImportPipeline\Interfaces\Entities\IJsonType;
-use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
 
 /**
  * Represents a JSON integer.
  */
-class JSONInteger implements IJsonType, IJSONSerializable, IVisitableJSONObject
+class JSONInteger extends BaseJSONObject
 {
     /** @var int $value The value stored in the object. */
     private $value;

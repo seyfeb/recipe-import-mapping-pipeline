@@ -3,14 +3,11 @@
 namespace RecipeImportPipeline\Entities\GenericJSON;
 
 use RecipeImportPipeline\Interfaces\Parsers\IJSONObjectParser;
-use RecipeImportPipeline\Interfaces\Entities\IJsonType;
-use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
-use RecipeImportPipeline\Interfaces\Entities\IVisitableJSONObject;
 
 /**
  * Represents a JSON boolean.
  */
-class JSONBool implements IJsonType, IJSONSerializable, IVisitableJSONObject
+class JSONBool extends BaseJSONObject
 {
     /** @var bool $value The value stored in the object. */
     private bool $value;

@@ -2,16 +2,17 @@
 
 namespace RecipeImportPipeline\Entities\GenericJSON;
 
+use ArrayAccess;
 use RecipeImportPipeline\Interfaces\Parsers\IJSONObjectParser;
 use RecipeImportPipeline\Interfaces\Entities\IJsonType;
 use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
-use RecipeImportPipeline\Interfaces\Entities\IVisitableJSONObject;
 
 /**
  * Represents a JSON object.
  */
-class JSONObject implements IJsonType, IJSONSerializable, IVisitableJSONObject {
-    /** @var array<IJsonType> $data The data stored in the object. */
+class JSONObject extends BaseJSONObject implements ArrayAccess
+{
+    /** @var array<BaseJSONObject> $data The data stored in the object. */
     private array $data;
 
     /**
@@ -27,10 +28,10 @@ class JSONObject implements IJsonType, IJSONSerializable, IVisitableJSONObject {
      * Set a property of the object.
      *
      * @param string $name The name of the property.
-     * @param IJsonType|null $value The value of the property.
+     * @param BaseJSONObject|null $value The value of the property.
      * @return void
      */
-    public function __set(string $name, ?IJsonType $value): void {
+    public function __set(string $name, ?BaseJSONObject $value): void {
         $this->data[$name] = $value;
     }
 
@@ -38,10 +39,44 @@ class JSONObject implements IJsonType, IJSONSerializable, IVisitableJSONObject {
      * Get a property of the object.
      *
      * @param string $name The name of the property.
-     * @return IJsonType|null The value of the property, or null if the property does not exist.
+     * @return BaseJSONObject|null The value of the property, or null if the property does not exist.
      */
-    public function __get(string $name): ?IJsonType {
+    public function __get(string $name): ?BaseJSONObject {
         return $this->data[$name] ?? null;
+    }
+
+    public function offsetExists(mixed $offset): bool
+    {
+        return isset($this->data[$offset]);
+    }
+
+    public function offsetGet(mixed $offset) : mixed
+    {
+        return $this->data[$offset];
+    }
+
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        if ($offset === null) {
+            $this->data[] = $value;
+        } else {
+            $this->data[$offset] = $value;
+        }
+    }
+
+    public function offsetUnset(mixed $offset): void
+    {
+        unset($this->data[$offset]);
+    }
+
+    /**
+     * Get the complete data of the object as an iterable array.
+     *
+     * @return array<BaseJSONObject> The data of the JSONObject.
+     */
+    public function getValue(): array
+    {
+        return $this->data;
     }
 
     /**

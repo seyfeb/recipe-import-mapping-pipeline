@@ -3,14 +3,11 @@
 namespace RecipeImportPipeline\Entities\GenericJSON;
 
 use RecipeImportPipeline\Interfaces\Parsers\IJSONObjectParser;
-use RecipeImportPipeline\Interfaces\Entities\IJsonType;
-use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
-use RecipeImportPipeline\Interfaces\Entities\IVisitableJSONObject;
 
 /**
  * Represents a JSON string.
  */
-class JSONString implements IJsonType, IJSONSerializable, IVisitableJSONObject
+class JSONString extends BaseJSONObject
 {
     /** @var string $value The value stored in the object. */
     private string $value;

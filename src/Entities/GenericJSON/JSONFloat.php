@@ -3,14 +3,11 @@
 namespace RecipeImportPipeline\Entities\GenericJSON;
 
 use RecipeImportPipeline\Interfaces\Parsers\IJSONObjectParser;
-use RecipeImportPipeline\Interfaces\Entities\IJsonType;
-use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
-use RecipeImportPipeline\Interfaces\Entities\IVisitableJSONObject;
 
 /**
  * Represents a JSON float.
  */
-class JSONFloat implements IJsonType, IJSONSerializable, IVisitableJSONObject
+class JSONFloat extends BaseJSONObject
 {
     /** @var float $value The value stored in the object. */
     private float $value;

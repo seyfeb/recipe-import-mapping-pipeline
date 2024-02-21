@@ -2,20 +2,18 @@
 
 namespace RecipeImportPipeline\Entities\GenericJSON;
 
+use ArrayAccess;
 use ArrayIterator;
 use RecipeImportPipeline\Interfaces\Parsers\IJSONObjectParser;
 use IteratorAggregate;
 use RecipeImportPipeline\Interfaces\Entities\IJsonType;
-use RecipeImportPipeline\Interfaces\Entities\IJSONSerializable;
-use RecipeImportPipeline\Interfaces\Entities\IVisitableJSONObject;
-use Traversable;
 
 /**
  * Represents a JSON array.
  */
-class JSONArray implements \ArrayAccess, IteratorAggregate, IJsonType, IJSONSerializable, IVisitableJSONObject
+class JSONArray extends BaseJSONObject implements ArrayAccess, IteratorAggregate
 {
-    /** @var array $data The data stored in the array. */
+    /** @var array<BaseJSONObject> $data The data stored in the array. */
     private array $data;
 
     /**
@@ -92,5 +90,15 @@ class JSONArray implements \ArrayAccess, IteratorAggregate, IJsonType, IJSONSeri
     public function parseWith(IJSONObjectParser $parser) : void
     {
         $parser->handleArray($this);
+    }
+
+    /**
+     * Get the complete data of the object as an iterable array.
+     *
+     * @return array<IJsonType> The value of the JSONObject.
+     */
+    public function getValue(): array
+    {
+        return $this->data;
     }
 }
