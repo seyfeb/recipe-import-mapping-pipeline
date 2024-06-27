@@ -14,6 +14,7 @@ Currently implemented
 - [x] Converting imported data to a standardized format for all input sources
 - [x] Recipe classes based on `schema.org/Recipe` with a subset of properties for demonstration purposes
 - [x] Mapping JSON to `Recipe`, etc. classes
+- [ ] Updating recipe graph objects (currently not part of this prototype)
 
 
 ## 🔀 Flow
@@ -31,7 +32,7 @@ flowchart LR
 During the export the complete parsing chain needs to be carried out.
 Nevertheless, in order to make the app extensible with respect to future enhancements, a rather raw version of the initial input data will be stored on disk for persistence.
 
-### Extracting basic JSON data - RawParser
+### `RawParser` - Extracting basic JSON data
 
 The input of a recipe can be manifold: a URL pointing to a website, a JSON string, HTML code, an image of a cookbook page, a PDF, etc.
 The dedicated parser tries to extract the recipe data from the input and creates a valid JSON representation.
@@ -47,14 +48,14 @@ flowchart TD
         * -->|Input|EXTR[RecipeExtractor]
         EXTR -- raw string --> CLEANER[JSON cleaner & parser]
         CLEANER -->|JSON|Q_PARSABLE{"JSON parsable?"}
-        Q_PARSABLE -->|Yes| ACCEPT[Accept imported data]
+        Q_PARSABLE -->|Yes| ACCEPT[Accept imported data,\n store on disk]
         Q_PARSABLE -->|No| EXCEPT[Throw exception]
     end
 ```
 
 The extracted (raw) JSON is the value to be stored on the hard drive.
 
-### Mapping to generic Schema.org objects - JsonParser
+### `JsonParser` - Mapping to generic Schema.org objects
 
 The representation of JSON objects and arrays in PHP is done using associative and indexed arrays, respectively.
 This makes it rather hard to handle complex type structures in plain PHP.
@@ -112,7 +113,7 @@ For the special case of references to objects, it might make sense to define a s
 ```mermaid
 classDiagram
     class AbstractJSONObject {
-        +triggerHandling(AbstractObjectParser) void*
+        +parseWith(AbstractObjectParser) void*
     }
     class JSONObject
     class JSONArray
@@ -146,7 +147,7 @@ The semantic will be handled later.
 
 The `schema.org` recipe objects are created as PHP classes like `Recipe`, `HowToSupply`, `HowToSection`, `HowToStep`, etc. which are used internally.
 These classes have mainly no functional methods but serve as pure data classes.
-The only exception to this non-functionality is the feature to be travelable.
+The only exception to this non-functionality is the feature to be travelable (cf. [Visitor Pattern](https://en.wikipedia.org/wiki/Visitor_pattern)).
 
 Ideally, these classes would be immutable, so changes to the graph would need new objects to be constructed from scratch.
 The actual construction (regardless of mutuality) is done in other classes using the `new` operator.
@@ -225,7 +226,7 @@ The interface `Travelable` is used later for extraction/updating the graph struc
 
 ### JSON Object parser - build semantical graph structure
 
-Starting with the [flattened output](#mapping-to-generic-schemaorg-objects---jsonparser), (potentially filtered) an algorithm is needed to extract a semantic tree in form of [semantic objects](#recipe-model-classes-as-data-classes).
+Starting with the [flattened output](#jsonparser---mapping-to-generic-schemaorg-objects) (potentially filtered), an algorithm is needed that extracts a semantic tree in form of [semantic objects](#recipe-model-classes-as-data-classes).
 
 For each class in the semantic objects' class tree, a corresponding factory class is defined.
 Here is a subset of the parser class tree:
@@ -260,9 +261,9 @@ classDiagram
 Each parser has a unique parsing method that will create the actual object in question.
 In order to build sub-objects (like `Instructions` for a `Recipe`), delegation to the corresponding sub-parser takes place:
 
-The upper level parser takes the corresponding `AbstractJSONObject` and calls the `triggerHandling` method with the corresponding factory object.
+The upper level parser takes the corresponding `AbstractJSONObject` and calls the `parseWith` method with the corresponding factory object.
 Depending on the type ob the `AbstractJSONObject`, one of the `handle*` methods of said factory object is called.
-For example, if the instruction entry of the recipe `JSONObject` was an array (aka `JSONArray`), the array's `triggerHandling` will be called which in term calls the `InstructionsParser`'s `handleArray` method.
+For example, if the instruction entry of the recipe `JSONObject` was an array (aka `JSONArray`), the array's `parseWith(InstructionsParser)` method will be called which in term calls the `InstructionsParser`'s `handleArray` method.
 To make this a bit more clear:
 
 ```mermaid
@@ -275,14 +276,14 @@ sequenceDiagram
     participant i as InstructionParser
 
     u ->>+ r: parse
-    r ->>+ iso: triggerHandling(instructionsParser)
+    r ->>+ iso: parseWith(instructionsParser)
     iso ->>+ is: handleArray(this)
 
     is ->>+ iso: getData
     iso -->>- is: Data
 
     loop for each entry
-        is ->>+ io: triggerHandling
+        is ->>+ io: parseWith
         io ->>+ i: handleString
         i ->>+ io: getData
         io -->>- i: Data
@@ -349,7 +350,7 @@ This allows for different out formats (e.g. _legacy_ and _modern_) to later prov
 ### Graph traveling for update
 
 Updating works quite similarly to outputting.
-Instead of a `AbstractJSONObject`, the traveler returns an `AbstractObject`.
+Instead of an `AbstractJSONObject`, the traveler returns an `AbstractObject`.
 The original object is to be replaced by the new one.
 Note that replacing might not be necessary.
 In this case, the original object can be returned.
@@ -362,7 +363,7 @@ This involves two parts:
 - The actual value `5 tomatoes`
 - Some way to address the second ingredient
 
-The latter can be realized by using an array of single addresses like `['ingrdients', 1]` in this case.
+The latter can be realized by using an array of single addresses like `['ingredients', 1]` in this case.
 Nevertheless, this information needs to be carried over the individual visit steps.
 
 ```mermaid

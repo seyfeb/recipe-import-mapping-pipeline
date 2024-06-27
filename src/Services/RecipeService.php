@@ -27,7 +27,7 @@ class RecipeService implements IRecipeService
     /** @var RecipeParser $recipeParser Parser extracting recipe objects */
     private RecipeParser $recipeParser;
 
-    /** @var IRecipeMapper[] $rawParsers Parsers in the pipeline. */
+    /** @var IRecipeMapper[] $rawParsers Mappers in the pipeline. */
     private array $recipeMappers;
 
     /**
